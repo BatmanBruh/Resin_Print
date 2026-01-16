@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resin Print Catalog - Saturn 4 Ultra 16K</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-card: #14141e;
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff006e;
+            --accent-amber: #ffbe0b;
+            --accent-green: #06d6a0;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888aa;
+            --text-muted: #555566;
+            --border-color: #2a2a3a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(255, 0, 110, 0.08) 0%, transparent 50%);
+        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 2rem; }
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);
+        }
+        .logo { display: flex; align-items: center; gap: 1rem; }
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+        }
+        h1 {
+            font-size: 1.75rem; font-weight: 600;
+            background: linear-gradient(90deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        h1 span { display: block; font-size: 0.85rem; font-weight: 400; -webkit-text-fill-color: var(--text-secondary); }
+        .header-actions { display: flex; gap: 0.75rem; }
+        button {
+            font-family: 'Outfit', sans-serif; padding: 0.75rem 1.5rem; border-radius: 8px;
+            border: none; cursor: pointer; font-weight: 500; font-size: 0.9rem;
+            transition: all 0.2s ease; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-cyan), #0099cc); color: var(--bg-primary); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3); }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-secondary); border-color: var(--accent-cyan); }
+        .btn-danger { background: rgba(255, 0, 110, 0.15); color: var(--accent-magenta); border: 1px solid rgba(255, 0, 110, 0.3); }
+        .drop-zone {
+            border: 2px dashed var(--border-color); border-radius: 16px; padding: 3rem;
+            text-align: center; margin-bottom: 2rem; transition: all 0.3s ease;
+            background: var(--bg-secondary); cursor: pointer;
+        }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent-cyan); background: rgba(0, 212, 255, 0.05); }
+        .drop-zone-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.7; }
+        .drop-zone h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .drop-zone p { color: var(--text-secondary); font-size: 0.9rem; }
+        .table-container { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; }
+        .table-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 1.5rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color);
+        }
+        .table-title { font-weight: 600; display: flex; align-items: center; gap: 0.75rem; }
+        .record-count { background: var(--accent-cyan); color: var(--bg-primary); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: var(--bg-secondary); position: sticky; top: 0; z-index: 10; }
+        th {
+            padding: 1rem; text-align: left; font-weight: 600; color: var(--text-secondary);
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+            white-space: nowrap; border-bottom: 1px solid var(--border-color);
+            cursor: pointer; user-select: none;
+        }
+        th:hover { color: var(--accent-cyan); }
+        td { padding: 0.875rem 1rem; border: 1px solid var(--border-color); vertical-align: middle; cursor: cell; }
+        tr:hover td { background: rgba(0, 212, 255, 0.03); }
+        td[contenteditable="true"]:hover { background: rgba(0, 212, 255, 0.05); }
+        td[contenteditable="true"]:focus { outline: none; background: rgba(0, 212, 255, 0.1); box-shadow: inset 0 0 0 2px var(--accent-cyan); }
+        .edit-hint { font-size: 0.8rem; color: var(--text-muted); margin-left: 1rem; font-weight: 400; }
+        .badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+        .badge-success { background: rgba(6, 214, 160, 0.15); color: var(--accent-green); }
+        .badge-neutral { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+        .row-actions { display: flex; gap: 0.5rem; }
+        .btn-icon { width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+        .column-manager { background: var(--bg-secondary); border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border-color); overflow: hidden; }
+        .column-manager-header { padding: 1rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .column-manager-header:hover { background: var(--bg-tertiary); }
+        .column-manager h4 { font-weight: 500; color: var(--text-secondary); margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+        .column-manager-content { padding: 0 1.5rem 1.5rem 1.5rem; display: none; }
+        .column-manager-content.open { display: block; }
+        .collapse-icon { transition: transform 0.2s; color: var(--text-muted); }
+        .collapse-icon.open { transform: rotate(180deg); }
+        .column-inputs { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        input[type="text"], select {
+            font-family: 'Outfit', sans-serif; padding: 0.75rem 1rem; border-radius: 8px;
+            border: 1px solid var(--border-color); background: var(--bg-tertiary);
+            color: var(--text-primary); font-size: 0.9rem;
+        }
+        input[type="text"]:focus { outline: none; border-color: var(--accent-cyan); }
+        .extraction-preview {
+            background: var(--bg-tertiary); border-radius: 12px; padding: 1.5rem;
+            margin-bottom: 1.5rem; border: 1px solid var(--accent-cyan); display: none;
+        }
+        .extraction-preview.visible { display: block; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .extraction-preview h4 { color: var(--accent-cyan); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .preview-item { background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 8px; }
+        .preview-item label { display: block; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+        .preview-item .value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+        .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+        #fileInput { display: none; }
+        .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; gap: 0.75rem; }
+        .toast { background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 1rem 1.5rem; border-radius: 10px; display: flex; align-items: center; gap: 0.75rem; animation: slideInRight 0.3s ease; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .toast.success { border-color: var(--accent-green); }
+        .toast.error { border-color: var(--accent-magenta); }
+        .footer-stats { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding: 1rem 1.5rem; background: var(--bg-secondary); border-radius: 12px; font-size: 0.85rem; color: var(--text-secondary); }
+        .stat-group { display: flex; gap: 2rem; }
+        .cell-link { color: var(--accent-cyan); text-decoration: none; }
+        .cell-link:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            header { flex-direction: column; gap: 1rem; text-align: center; }
+            .column-inputs { flex-direction: column; }
+            .preview-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🖨️</div>
+                <h1>Resin Print Catalog<span>ELEGOO Saturn 4 Ultra 16K Settings Tracker</span></h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="addManualEntry()">➕ Add Entry</button>
+                <button class="btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">📂 Import GOO</button>
+                <button class="btn-danger" onclick="resetData()">🗑️ Reset</button>
+            </div>
+        </header>
+        <input type="file" id="fileInput" accept=".goo" multiple onchange="handleFileSelect(event)">
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="drop-zone-icon">📁</div>
+            <h3>Drop GOO files here</h3>
+            <p>Or click to browse • Extracts layer height, exposure times, and more automatically</p>
+        </div>
+        <div class="extraction-preview" id="extractionPreview">
+            <h4>✨ Extracted from GOO File</h4>
+            <div class="preview-grid" id="previewGrid"></div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
+                <button class="btn-primary" onclick="confirmExtraction()">✓ Add to Catalog</button>
+                <button class="btn-secondary" onclick="cancelExtraction()">✕ Cancel</button>
+            </div>
+        </div>
+        <div class="column-manager">
+            <div class="column-manager-header" onclick="toggleColumnManager()">
+                <h4>➕ Add Custom Column</h4>
+                <span class="collapse-icon" id="collapseIcon">▼</span>
+            </div>
+            <div class="column-manager-content" id="columnManagerContent">
+                <div class="column-inputs">
+                <input type="text" id="newColumnName" placeholder="Column name...">
+                <select id="newColumnType">
+                    <option value="text">Text</option>
+                    <option value="number">Number</option>
+                    <option value="link">Link/URL</option>
+                    <option value="boolean">Yes/No</option>
+                </select>
+                <button class="btn-secondary" onclick="addColumn()">Add Column</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">Print Settings Catalog <span class="record-count" id="recordCount">0</span><span class="edit-hint">• Click any cell to edit</span></div>
+            </div>
+            <div class="table-wrapper">
+                <table id="dataTable"><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table>
+            </div>
+        </div>
+        <div class="footer-stats">
+            <div class="stat-group">
+                <span>Total Prints: <strong id="totalPrints">0</strong></span>
+                <span>Successful: <strong id="successfulPrints">0</strong></span>
+                <span>Total Resin: <strong id="totalResin">0</strong> mL</span>
+            </div>
+            <div><span style="color: var(--text-muted);">Data stored in browser localStorage</span></div>
+        </div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // GOO V3 File Parser
+        class GooParser {
+            constructor(arrayBuffer) {
+                this.data = new DataView(arrayBuffer);
+                this.bytes = new Uint8Array(arrayBuffer);
+            }
+            readString(offset, maxLength) {
+                let result = '';
+                for (let i = 0; i < maxLength; i++) {
+                    const char = this.bytes[offset + i];
+                    if (char === 0) break;
+                    if (char >= 32 && char <= 126) result += String.fromCharCode(char);
+                }
+                return result;
+            }
+            readFloatBE(offset) { return this.data.getFloat32(offset, false); }
+            findBytes(pattern, startOffset = 0) {
+                const patternBytes = new Uint8Array(pattern);
+                for (let i = startOffset; i <= this.bytes.length - patternBytes.length; i++) {
+                    let match = true;
+                    for (let j = 0; j < patternBytes.length; j++) {
+                        if (this.bytes[i + j] !== patternBytes[j]) { match = false; break; }
+                    }
+                    if (match) return i;
+                }
+                return -1;
+            }
+            floatToBytesBE(value) {
+                const buffer = new ArrayBuffer(4);
+                new DataView(buffer).setFloat32(0, value, false);
+                return new Uint8Array(buffer);
+            }
+            parse() {
+                const result = {
+                    version: this.readString(0, 4),
+                    software_name: this.readString(0x0C, 32),
+                    printer_name: this.readString(0x5C, 40),
+                    slice_datetime: this.readString(0x44, 20),
+                    layer_height_mm: null,
+                    normal_exposure_s: null,
+                    bottom_exposure_s: null,
+                    bottom_layers: null,
+                    transition_layers: null,
+                    wait_before_cure_s: null,
+                    model_x_mm: null,
+                    model_y_mm: null,
+                    model_z_mm: null,
+                    estimated_layer_count: null
+                };
+                const commonHeights = [0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.10];
+                let layerHeightPos = -1;
+                for (const height of commonHeights) {
+                    const bytes = this.floatToBytesBE(height);
+                    const pos = this.findBytes(bytes, 0x1000);
+                    if (pos > 0 && pos < 0x100000) {
+                        const nextFloat = this.readFloatBE(pos + 4);
+                        if (nextFloat > 0.5 && nextFloat < 200) {
+                            result.layer_height_mm = height;
+                            result.normal_exposure_s = nextFloat;
+                            layerHeightPos = pos;
+                            break;
+                        }
+                    }
+                }
+                if (layerHeightPos > 16) {
+                    // Model dimensions (before layer height position)
+                    const dim1 = this.readFloatBE(layerHeightPos - 12);
+                    const dim2 = this.readFloatBE(layerHeightPos - 8);
+                    const dim3 = this.readFloatBE(layerHeightPos - 4);
+                    if (dim1 > 0 && dim1 < 500 && dim2 > 0 && dim2 < 500 && dim3 > 0 && dim3 < 500) {
+                        result.model_x_mm = Math.round(dim1 * 100) / 100;
+                        result.model_y_mm = Math.round(dim2 * 100) / 100;
+                        result.model_z_mm = Math.round(dim3 * 100) / 100;
+                    }
+                    if (result.layer_height_mm) {
+                        // Find layer 2 for bottom exposure and wait time
+                        const z2Bytes = this.floatToBytesBE(result.layer_height_mm * 2);
+                        const z2Pos = this.findBytes(z2Bytes, layerHeightPos + 100);
+                        if (z2Pos > 0) {
+                            const layer2Exposure = this.readFloatBE(z2Pos + 4);
+                            if (layer2Exposure > 10 && layer2Exposure < 200) {
+                                result.bottom_exposure_s = layer2Exposure;
+                            }
+                            // Wait time before cure (offset +0x18 from layer start, which is +0x14 from z position)
+                            const waitTime = this.readFloatBE(z2Pos + 0x14);
+                            if (waitTime > 0 && waitTime < 30) {
+                                result.wait_before_cure_s = Math.round(waitTime * 100) / 100;
+                            }
+                        }
+                        // Count bottom layers and transition layers
+                        let bottomCount = 0;
+                        let transitionCount = 0;
+                        let lastExposure = result.bottom_exposure_s || 45;
+                        let inTransition = false;
+                        
+                        for (let i = 1; i <= 30; i++) {
+                            const zBytes = this.floatToBytesBE(result.layer_height_mm * i);
+                            const zPos = this.findBytes(zBytes, layerHeightPos + 100);
+                            if (zPos > 0) {
+                                const exposure = this.readFloatBE(zPos + 4);
+                                if (exposure > 0 && exposure < 200) {
+                                    if (!inTransition && Math.abs(exposure - lastExposure) < 1) {
+                                        bottomCount++;
+                                    } else if (exposure < lastExposure * 0.95 && exposure > result.normal_exposure_s * 1.1) {
+                                        inTransition = true;
+                                        transitionCount++;
+                                    } else if (Math.abs(exposure - result.normal_exposure_s) < 0.5) {
+                                        break; // Reached normal layers
+                                    }
+                                    lastExposure = exposure;
+                                }
+                            }
+                        }
+                        if (bottomCount > 0) result.bottom_layers = bottomCount;
+                        if (transitionCount > 0) result.transition_layers = transitionCount;
+                    }
+                }
+                if (result.model_z_mm && result.layer_height_mm) {
+                    result.estimated_layer_count = Math.round(result.model_z_mm / result.layer_height_mm);
+                }
+                return result;
+            }
+        }
+
+        // Default columns
+        const defaultColumns = [
+            // Auto-populated from GOO file
+            { id: 'print_name', name: 'Print Name', type: 'text', visible: true },
+            { id: 'date', name: 'Date', type: 'text', visible: true },
+            { id: 'layer_height_mm', name: 'Layer Height (mm)', type: 'number', visible: true },
+            { id: 'bottom_layers', name: 'Bottom Layers', type: 'number', visible: true },
+            { id: 'transition_layers', name: 'Transition Layers', type: 'number', visible: true },
+            { id: 'bottom_exposure_s', name: 'Bottom Exp (s)', type: 'number', visible: true },
+            { id: 'normal_exposure_s', name: 'Normal Exp (s)', type: 'number', visible: true },
+            { id: 'wait_before_cure_s', name: 'Wait Before Cure (s)', type: 'number', visible: true },
+            { id: 'model_x_mm', name: 'Model X (mm)', type: 'number', visible: true },
+            { id: 'model_y_mm', name: 'Model Y (mm)', type: 'number', visible: true },
+            { id: 'model_z_mm', name: 'Model Z (mm)', type: 'number', visible: true },
+            // Manual entry fields
+            { id: 'success', name: 'Success', type: 'boolean', visible: true },
+            { id: 'hollow', name: 'Hollow', type: 'boolean', visible: true },
+            { id: 'wall_thickness_mm', name: 'Wall (mm)', type: 'number', visible: true },
+            { id: 'drain_hole_mm', name: 'Drain Hole (mm)', type: 'number', visible: true },
+            { id: 'drain_hole_coords', name: 'Drain Coords', type: 'text', visible: false },
+            { id: 'supports', name: 'Supports', type: 'text', visible: true },
+            { id: 'resin_ml', name: 'Resin (mL)', type: 'number', visible: true },
+            { id: 'cure_time_s', name: 'Post-Cure (s)', type: 'number', visible: true },
+            { id: 'notes', name: 'Notes', type: 'text', visible: true }
+        ];
+
+        let columns = JSON.parse(localStorage.getItem('printCatalogColumns')) || defaultColumns;
+        let data = JSON.parse(localStorage.getItem('printCatalogData')) || [];
+        let pendingExtraction = null;
+        let sortColumn = null;
+        let sortDirection = 'asc';
+
+        function saveData() {
+            localStorage.setItem('printCatalogData', JSON.stringify(data));
+            localStorage.setItem('printCatalogColumns', JSON.stringify(columns));
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function renderTable() {
+            const visibleColumns = columns.filter(c => c.visible);
+            const thead = document.getElementById('tableHead');
+            thead.innerHTML = `<tr>${visibleColumns.map(col => `<th onclick="sortBy('${col.id}')">${col.name}</th>`).join('')}<th>Actions</th></tr>`;
+            const tbody = document.getElementById('tableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${visibleColumns.length + 1}"><div class="empty-state"><div class="empty-state-icon">📋</div><p>No print records yet. Drop a GOO file or add an entry manually.</p></div></td></tr>`;
+            } else {
+                const sortedData = [...data];
+                if (sortColumn) {
+                    sortedData.sort((a, b) => {
+                        let valA = a[sortColumn] || '', valB = b[sortColumn] || '';
+                        if (typeof valA === 'number' && typeof valB === 'number') return sortDirection === 'asc' ? valA - valB : valB - valA;
+                        valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase();
+                        return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                    });
+                }
+                tbody.innerHTML = sortedData.map((row, idx) => `<tr data-idx="${data.indexOf(row)}">${visibleColumns.map(col => {
+                    const value = row[col.id] || '';
+                    return `<td contenteditable="true" data-col="${col.id}" data-type="${col.type}" onblur="updateCell(this, ${data.indexOf(row)}, '${col.id}')">${formatCell(value, col.type)}</td>`;
+                }).join('')}<td><div class="row-actions"><button class="btn-icon btn-secondary" onclick="duplicateRow(${data.indexOf(row)})" title="Duplicate">📋</button><button class="btn-icon btn-danger" onclick="deleteRow(${data.indexOf(row)})" title="Delete">🗑️</button></div></td></tr>`).join('');
+            }
+            document.getElementById('recordCount').textContent = data.length;
+            document.getElementById('totalPrints').textContent = data.length;
+            document.getElementById('successfulPrints').textContent = data.filter(d => d.success === true || d.success === 'Yes').length;
+            document.getElementById('totalResin').textContent = data.reduce((sum, d) => sum + (parseFloat(d.resin_ml) || 0), 0).toFixed(1);
+        }
+
+        function formatCell(value, type) {
+            if (value === null || value === undefined || value === '') return '';
+            switch (type) {
+                case 'boolean':
+                    const isYes = value === true || value === 'Yes' || value === 'yes' || value === '1';
+                    return `<span class="badge ${isYes ? 'badge-success' : 'badge-neutral'}">${isYes ? 'Yes' : 'No'}</span>`;
+                case 'number': return `<span class="mono">${value}</span>`;
+                case 'link': return value && value.startsWith('http') ? `<a href="${value}" target="_blank" class="cell-link">🔗 Link</a>` : value;
+                default: return value;
+            }
+        }
+
+        function updateCell(td, rowIdx, colId) {
+            let value = td.innerText.trim();
+            const col = columns.find(c => c.id === colId);
+            if (col.type === 'boolean') value = value.toLowerCase().includes('yes') || value === '1' ? true : false;
+            else if (col.type === 'number') value = parseFloat(value) || null;
+            data[rowIdx][colId] = value;
+            saveData();
+            renderTable();
+        }
+
+        function sortBy(colId) {
+            if (sortColumn === colId) sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            else { sortColumn = colId; sortDirection = 'asc'; }
+            renderTable();
+        }
+
+        function addManualEntry() {
+            data.unshift({ print_name: 'New Print', date: new Date().toISOString().split('T')[0], success: null });
+            saveData(); renderTable(); showToast('New entry added');
+        }
+
+        function deleteRow(idx) {
+            if (confirm('Delete this entry?')) { data.splice(idx, 1); saveData(); renderTable(); showToast('Entry deleted'); }
+        }
+
+        function duplicateRow(idx) {
+            const copy = {...data[idx], print_name: data[idx].print_name + ' (copy)'};
+            data.splice(idx + 1, 0, copy); saveData(); renderTable(); showToast('Entry duplicated');
+        }
+
+        function addColumn() {
+            const name = document.getElementById('newColumnName').value.trim();
+            const type = document.getElementById('newColumnType').value;
+            if (!name) { showToast('Please enter a column name', 'error'); return; }
+            const id = name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+            if (columns.find(c => c.id === id)) { showToast('Column already exists', 'error'); return; }
+            columns.push({ id, name, type, visible: true });
+            saveData(); renderTable();
+            document.getElementById('newColumnName').value = '';
+            showToast(`Column "${name}" added`);
+        }
+
+        function handleFileSelect(event) {
+            for (const file of event.target.files) processGooFile(file);
+            event.target.value = '';
+        }
+
+        async function processGooFile(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const parser = new GooParser(arrayBuffer);
+                const extracted = parser.parse();
+                pendingExtraction = {
+                    print_name: file.name.replace('.goo', ''),
+                    date: extracted.slice_datetime?.split(' ')[0] || new Date().toISOString().split('T')[0],
+                    layer_height_mm: extracted.layer_height_mm,
+                    normal_exposure_s: extracted.normal_exposure_s,
+                    bottom_exposure_s: extracted.bottom_exposure_s,
+                    bottom_layers: extracted.bottom_layers,
+                    transition_layers: extracted.transition_layers,
+                    wait_before_cure_s: extracted.wait_before_cure_s,
+                    model_x_mm: extracted.model_x_mm,
+                    model_y_mm: extracted.model_y_mm,
+                    model_z_mm: extracted.model_z_mm,
+                    estimated_layers: extracted.estimated_layer_count,
+                    printer: extracted.printer_name,
+                    software: extracted.software_name
+                };
+                showExtractionPreview(pendingExtraction);
+            } catch (err) {
+                console.error('Error parsing GOO file:', err);
+                showToast('Error parsing GOO file', 'error');
+            }
+        }
+
+        function showExtractionPreview(extracted) {
+            const items = [
+                ['Print Name', extracted.print_name],
+                ['Date', extracted.date],
+                ['Layer Height', extracted.layer_height_mm ? `${extracted.layer_height_mm} mm` : 'N/A'],
+                ['Normal Exposure', extracted.normal_exposure_s ? `${extracted.normal_exposure_s} s` : 'N/A'],
+                ['Bottom Exposure', extracted.bottom_exposure_s ? `${extracted.bottom_exposure_s} s` : 'N/A'],
+                ['Bottom Layers', extracted.bottom_layers || 'N/A'],
+                ['Transition Layers', extracted.transition_layers || 'N/A'],
+                ['Wait Before Cure', extracted.wait_before_cure_s ? `${extracted.wait_before_cure_s} s` : 'N/A'],
+                ['Model X', extracted.model_x_mm ? `${extracted.model_x_mm} mm` : 'N/A'],
+                ['Model Y', extracted.model_y_mm ? `${extracted.model_y_mm} mm` : 'N/A'],
+                ['Model Z', extracted.model_z_mm ? `${extracted.model_z_mm} mm` : 'N/A'],
+                ['Est. Layers', extracted.estimated_layers || 'N/A'],
+                ['Printer', extracted.printer || 'N/A']
+            ];
+            document.getElementById('previewGrid').innerHTML = items.map(([label, value]) => `<div class="preview-item"><label>${label}</label><div class="value">${value}</div></div>`).join('');
+            document.getElementById('extractionPreview').classList.add('visible');
+        }
+
+        function confirmExtraction() {
+            if (!pendingExtraction) return;
+            data.unshift({
+                print_name: pendingExtraction.print_name,
+                date: pendingExtraction.date,
+                success: null,
+                layer_height_mm: pendingExtraction.layer_height_mm,
+                normal_exposure_s: pendingExtraction.normal_exposure_s,
+                bottom_exposure_s: pendingExtraction.bottom_exposure_s,
+                bottom_layers: pendingExtraction.bottom_layers,
+                transition_layers: pendingExtraction.transition_layers,
+                wait_before_cure_s: pendingExtraction.wait_before_cure_s,
+                model_x_mm: pendingExtraction.model_x_mm,
+                model_y_mm: pendingExtraction.model_y_mm,
+                model_z_mm: pendingExtraction.model_z_mm
+            });
+            saveData(); renderTable(); cancelExtraction(); showToast('Print added to catalog!');
+        }
+
+        function cancelExtraction() {
+            pendingExtraction = null;
+            document.getElementById('extractionPreview').classList.remove('visible');
+        }
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('drag-over');
+            for (const file of e.dataTransfer.files) {
+                if (file.name.endsWith('.goo')) processGooFile(file);
+                else showToast('Please drop .goo files only', 'error');
+            }
+        });
+
+        function toggleColumnManager() {
+            const content = document.getElementById('columnManagerContent');
+            const icon = document.getElementById('collapseIcon');
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+
+        function resetData() {
+            if (confirm('Reset all data and columns to defaults? This cannot be undone.')) {
+                localStorage.removeItem('printCatalogData');
+                localStorage.removeItem('printCatalogColumns');
+                columns = [...defaultColumns];
+                data = [];
+                saveData();
+                renderTable();
+                showToast('Reset to defaults');
+            }
+        }
+
+        function exportCSV() {
+            if (data.length === 0) { showToast('No data to export', 'error'); return; }
+            const visibleColumns = columns.filter(c => c.visible);
+            const headers = visibleColumns.map(c => c.name).join(',');
+            const rows = data.map(row => visibleColumns.map(col => {
+                let val = row[col.id] || '';
+                val = String(val).replace(/"/g, '""');
+                if (val.includes(',') || val.includes('"') || val.includes('\n')) val = `"${val}"`;
+                return val;
+            }).join(','));
+            const csv = [headers, ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `resin-print-catalog-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            showToast('CSV exported!');
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
